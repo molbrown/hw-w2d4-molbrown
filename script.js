@@ -1,14 +1,22 @@
 function validateForm (fields) {
     document.querySelectorAll("input").forEach(function (fields) {
         var val = fields.value
-        if (val == '') {
-            fields.parentElement.classList.add("input-invalid")
+        var par = fields.parentElement
+        if (par.classList.contains("input-field")) {
+            if (val == '') {
+                fields.parentElement.classList.add("input-invalid")
+            } else {
+                fields.parentElement.classList.add("input-valid")
+            }
         } else {
-            fields.parentElement.classList.add("input-valid")
+            if (val == '') {
+                fields.parentElement.parentElement.classList.add("input-invalid")
+            } else {
+                fields.parentElement.parentElement.classList.add("input-valid")
+            }
         }
 })
 }
-
 
   function run() {
 
