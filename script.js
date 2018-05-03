@@ -1,18 +1,31 @@
 function validateForm (fields) {
     document.querySelectorAll("input").forEach(function (fields) {
         var val = fields.value
-        var par = fields.parentElement
+        var par = fields.parentElement   
         if (par.classList.contains("input-field")) {
+            var reg = fields.previousElementSibling.innerText
+            var newDiv = document.createElement("div")
+            var newText = document.createTextNode(reg + " is required")
+            // newDiv.classList.add("input-invalid")
             if (val == '') {
-                fields.parentElement.classList.add("input-invalid")
+                par.classList.add("input-invalid")
+                newDiv.appendChild(newText)
+                par.appendChild(newDiv)               
             } else {
-                fields.parentElement.classList.add("input-valid")
+                par.classList.add("input-valid")
             }
         } else {
+            var regCar = fields.placeholder
+            var newDiv = document.createElement("div")
+            var newText = document.createTextNode(regCar + " is required")
+            // newDiv.classList.add("input-invalid")
             if (val == '') {
-                fields.parentElement.parentElement.classList.add("input-invalid")
+                par.parentElement.classList.add("input-invalid")
+                newDiv.appendChild(newText)
+                par.parentElement.appendChild(newDiv) 
             } else {
-                fields.parentElement.parentElement.classList.add("input-valid")
+                par.parentElement.classList.add("input-valid")
+                
             }
         }
 })
