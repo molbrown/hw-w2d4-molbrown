@@ -5,8 +5,8 @@
 // Regular field functions //
 
 function validateEntry(field) {
-    var reg = field.previousElementSibling.innerText
-    var handle = document.getElementById(reg)
+    var labelText = field.previousElementSibling.innerText
+    var handle = document.getElementById(labelText)
     var par = field.parentElement 
     par.classList.add("input-valid")
         if (handle !== null) {
@@ -16,10 +16,10 @@ function validateEntry(field) {
 
 function invalidMessage(field) {
     var parent = field.parentElement  
-    var reg = field.previousElementSibling.innerText
+    var labelText = field.previousElementSibling.innerText
     var newDiv = document.createElement("div")
-    var newText = document.createTextNode(reg + " is required")
-    newDiv.setAttribute("id",reg)
+    var newText = document.createTextNode(labelText + " is required")
+    newDiv.setAttribute("id",labelText)
     if (!parent.classList.contains("input-invalid")) {
         parent.classList.add("input-invalid")
         newDiv.appendChild(newText)
@@ -30,8 +30,8 @@ function invalidMessage(field) {
 // Car field functions //
 
 function validateEntryCar(field) {
-    var regCar = field.placeholder
-    var handleCar = document.getElementById(regCar)
+    var placeText = field.placeholder
+    var handleCar = document.getElementById(placeText)
     var parent = field.parentElement 
     parent.parentElement.classList.add("input-valid")
         if (handleCar !== null) {
@@ -41,11 +41,11 @@ function validateEntryCar(field) {
 
 function invalidMessageCar(field) {
     var parent = field.parentElement   
-    var regCar = field.placeholder
-    var handleCar = document.getElementById(regCar)
+    var placeText = field.placeholder
+    var handleCar = document.getElementById(placeText)
     var newDiv = document.createElement("div")
-    var newText = document.createTextNode(regCar + " is required")
-    newDiv.setAttribute("id",regCar)
+    var newText = document.createTextNode(placeText + " is required")
+    newDiv.setAttribute("id",placeText)
     if (parent.parentElement.classList.contains("input-invalid")) {
         if (handleCar !== null) {
             handleCar.remove()
