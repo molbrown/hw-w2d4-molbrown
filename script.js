@@ -1,6 +1,3 @@
-// General variables //
-
-
 
 // Regular field functions //
 
@@ -19,12 +16,16 @@ function invalidMessage(field) {
     var labelText = field.previousElementSibling.innerText
     var newDiv = document.createElement("div")
     var newText = document.createTextNode(labelText + " is required")
+    var labelText = field.previousElementSibling.innerText
+    var handle = document.getElementById(labelText)
     newDiv.setAttribute("id",labelText)
-    if (!parent.classList.contains("input-invalid")) {
-        parent.classList.add("input-invalid")
-        newDiv.appendChild(newText)
-        parent.appendChild(newDiv)            
+    if (parent.classList.contains("input-invalid") && handle !== null) {
+        handle.remove()        
     }
+    parent.classList.remove("input-valid")
+    parent.classList.add("input-invalid")
+    newDiv.appendChild(newText)
+    parent.appendChild(newDiv)    
 }
 
 // Car field functions //
@@ -46,10 +47,8 @@ function invalidMessageCar(field) {
     var newDiv = document.createElement("div")
     var newText = document.createTextNode(placeText + " is required")
     newDiv.setAttribute("id",placeText)
-    if (parent.parentElement.classList.contains("input-invalid")) {
-        if (handleCar !== null) {
-            handleCar.remove()
-        } 
+    if (parent.parentElement.classList.contains("input-invalid") && handleCar !== null) {
+        handleCar.remove()
     } 
     parent.parentElement.classList.remove("input-valid")
     parent.parentElement.classList.add("input-invalid")
@@ -58,6 +57,7 @@ function invalidMessageCar(field) {
 }
 
 
+// Listener Functions (call above functions) //
 
 function validateForm (fields) {
     document.querySelectorAll("input").forEach(function (fields) {
