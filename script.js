@@ -81,13 +81,24 @@ function validateForm (fields) {
     })
 }
 
-// function carYear (year) {
-//     document.querySelector("#car-year").forEach(function (year)
-//         // if ()
-
-
-// )
-// }
+function carYear() {
+    var yearField = document.querySelector("#car-year")
+    var val = yearField.value
+    var num = parseInt(val, 10)
+    var parent = yearField.parentElement 
+    if (parent.parentElement.classList.contains("input-valid")) {
+        if (isNaN(num)) {
+            var isNumber = document.createElement("div")
+            var yearWarn = document.createTextNode("Car year must be a number.")
+            isNumber.setAttribute("id", isNumber)
+            isNumber.appendChild(yearWarn)
+            parent.parentElement.appendChild(isNumber) 
+            parent.parentElement.classList.remove("input-valid")
+            parent.parentElement.classList.add("input-invalid")
+        }
+    }
+    
+}
 
 
 
@@ -96,6 +107,7 @@ function validateForm (fields) {
 
   document.querySelector("#submit-button").addEventListener('click', function (event) {
     validateForm()
+    carYear()
     // other functions called here //
     event.preventDefault()
   })
