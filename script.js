@@ -4,7 +4,7 @@
 
 // Regular field functions //
 
-function validateEntry (field) {
+function validateEntry(field) {
     var reg = field.previousElementSibling.innerText
     var handle = document.getElementById(reg)
     var par = field.parentElement 
@@ -14,16 +14,47 @@ function validateEntry (field) {
         }
 }
 
+function invalidMessage(field) {
+    var parent = field.parentElement  
+    var reg = field.previousElementSibling.innerText
+    var newDiv = document.createElement("div")
+    var newText = document.createTextNode(reg + " is required")
+    newDiv.setAttribute("id",reg)
+    if (!parent.classList.contains("input-invalid")) {
+        parent.classList.add("input-invalid")
+        newDiv.appendChild(newText)
+        parent.appendChild(newDiv)            
+    }
+}
+
 // Car field functions //
 
-function validateCarEntry(field) {
+function validateEntryCar(field) {
     var regCar = field.placeholder
     var handleCar = document.getElementById(regCar)
-    var par = field.parentElement 
-    par.parentElement.classList.add("input-valid")
+    var parent = field.parentElement 
+    parent.parentElement.classList.add("input-valid")
         if (handleCar !== null) {
             handleCar.remove()
         }
+}
+
+function invalidMessageCar(field) {
+    var parent = field.parentElement   
+    var regCar = field.placeholder
+    var handleCar = document.getElementById(regCar)
+    var newDiv = document.createElement("div")
+    var newText = document.createTextNode(regCar + " is required")
+    newDiv.setAttribute("id",regCar)
+    if (parent.parentElement.classList.contains("input-invalid")) {
+        if (handleCar !== null) {
+            handleCar.remove()
+        } 
+    } 
+    parent.parentElement.classList.remove("input-valid")
+    parent.parentElement.classList.add("input-invalid")
+    newDiv.appendChild(newText)
+    parent.parentElement.appendChild(newDiv) 
 }
 
 
@@ -31,41 +62,19 @@ function validateCarEntry(field) {
 function validateForm (fields) {
     document.querySelectorAll("input").forEach(function (fields) {
         var val = fields.value
-        var par = fields.parentElement   
-        if (par.classList.contains("input-field")) {
-            var reg = fields.previousElementSibling.innerText
-            var newDiv = document.createElement("div")
-            var newText = document.createTextNode(reg + " is required")
-            newDiv.setAttribute("id",reg)
-            var handle = document.getElementById(reg)
+        var parent = fields.parentElement   
+        if (parent.classList.contains("input-field")) {
             if (val == '') {
-                if (!par.classList.contains("input-invalid")) {
-                    par.classList.add("input-invalid")
-                    newDiv.appendChild(newText)
-                    par.appendChild(newDiv)            
-                }
-                par.classList.remove("input-valid")   
+                invalidMessage(fields)
+                parent.classList.remove("input-valid")   
             } else {
                 validateEntry(fields)
             }
         } else {
-            var regCar = fields.placeholder
-            var newDiv = document.createElement("div")
-            var newText = document.createTextNode(regCar + " is required")
-            newDiv.setAttribute("id",regCar)
-            var handleCar = document.getElementById(regCar)
             if (val == '') {
-                if (par.parentElement.classList.contains("input-invalid")) {
-                    if (handleCar !== null) {
-                        handleCar.remove()
-                    } 
-                } 
-                par.parentElement.classList.remove("input-valid")
-                par.parentElement.classList.add("input-invalid")
-                newDiv.appendChild(newText)
-                par.parentElement.appendChild(newDiv) 
+                invalidMessageCar(fields)
             }else {
-                validateCarEntry(fields)
+                validateEntryCar(fields)
             }
         }
         
