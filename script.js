@@ -88,18 +88,51 @@ function carYear() {
     var parent = yearField.parentElement 
     if (parent.parentElement.classList.contains("input-valid")) {
         if (isNaN(num)) {
-            var isNumber = document.createElement("div")
+            var oneDiv = document.createElement("div")
             var yearWarn = document.createTextNode("Car year must be a number.")
-            isNumber.setAttribute("id", isNumber)
-            isNumber.appendChild(yearWarn)
-            parent.parentElement.appendChild(isNumber) 
+            oneDiv.setAttribute("id", "isNumber")
+            oneDiv.appendChild(yearWarn)
+            parent.parentElement.appendChild(oneDiv) 
             parent.parentElement.classList.remove("input-valid")
             parent.parentElement.classList.add("input-invalid")
+            if (document.getElementById("future") !== null) {
+                document.getElementById("future").remove()
+            }
+            if (document.getElementById("after") !== null) {
+                document.getElementById("after").remove()
+            }
+        } else if (num < 1900) {
+            var twoDiv = document.createElement("div")
+            var afterWarn = document.createTextNode("Car year must be after 1900.")
+            twoDiv.setAttribute("id", "after")
+            twoDiv.appendChild(afterWarn)
+            parent.parentElement.appendChild(twoDiv) 
+            parent.parentElement.classList.remove("input-valid")
+            parent.parentElement.classList.add("input-invalid")
+            if (document.getElementById("isNumber") !== null) {
+                document.getElementById("isNumber").remove()
+            }
+            if (document.getElementById("future") !== null) {
+                document.getElementById("future").remove()
+            }
+        } else if (num > 2018) {
+            var threeDiv = document.createElement("div")
+            var futureWarn = document.createTextNode("Car year cannot be in the future.")
+            threeDiv.setAttribute("id", "future")
+            threeDiv.appendChild(futureWarn)
+            parent.parentElement.appendChild(threeDiv) 
+            parent.parentElement.classList.remove("input-valid")
+            parent.parentElement.classList.add("input-invalid")
+            if (document.getElementById("isNumber") !== null) {
+                document.getElementById("isNumber").remove()
+            }
+            if (document.getElementById("after") !== null) {
+                document.getElementById("after").remove()
+            }
         }
     }
     
 }
-
 
 
 
