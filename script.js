@@ -75,6 +75,12 @@ function deleteFutureError() {
     }
 }
 
+function deleteParkDateError() {
+    if (document.getElementById("park-warn") !== null) {
+        document.getElementById("park-warn").remove()
+    }
+}
+
 function insertNumberError() {
     deleteNumberError()
     var yearField = document.querySelector("#car-year")
@@ -133,6 +139,7 @@ function validateForm (fields) {
                 parent.classList.remove("input-valid")   
             } else {
                 validateEntry(fields)
+                deleteParkDateError()
             }
         } else {
             if (val == '') {
@@ -165,13 +172,35 @@ function carYear() {
     
 }
 
+function datePark() {
+    var todayParse = Date.now()
+    var entryDate = document.querySelector("#start-date").value
+    var entryParse = Date.parse(entryDate)
+    console.log(todayParse)
+    console.log(entryDate)
+    if(todayParse > entryParse) {
+        deleteParkDateError()
+        var fourDiv = document.createElement("div")
+        var parkWarn = document.createTextNode("Date parking must be in the future.")
+        fourDiv.setAttribute("id", "park-warn")
+        fourDiv.appendChild(parkWarn)
+        document.querySelector("#start-date").parentElement.appendChild(fourDiv) 
+        document.querySelector("#start-date").parentElement.classList.remove("input-valid")
+        document.querySelector("#start-date").parentElement.classList.add("input-invalid")
+    } 
+}
 
+
+
+
+// Listener //
 
   function run() {
 
   document.querySelector("#submit-button").addEventListener('click', function (event) {
     validateForm()
     carYear()
+    datePark()
     // other functions called here //
     event.preventDefault()
   })
