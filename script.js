@@ -9,6 +9,7 @@ function validateEntry(field) {
         if (handle !== null) {
             handle.remove()
         }
+        field.setAttribute("class", "check")
 }
 
 function invalidMessage(field) {
@@ -81,6 +82,12 @@ function deleteParkDateError() {
     }
 }
 
+function deleteParkNumberError() {
+    if (document.getElementById("day-number") !== null) {
+        document.getElementById("day-number").remove()
+    }
+}
+
 function insertNumberError() {
     deleteNumberError()
     var yearField = document.querySelector("#car-year")
@@ -137,9 +144,12 @@ function validateForm (fields) {
             if (val == '') {
                 invalidMessage(fields)
                 parent.classList.remove("input-valid")   
+                deleteParkNumberError()
             } else {
                 validateEntry(fields)
                 deleteParkDateError()
+                deleteParkNumberError()
+                deleteParkNumberError()
             }
         } else {
             if (val == '') {
@@ -176,8 +186,6 @@ function datePark() {
     var todayParse = Date.now()
     var entryDate = document.querySelector("#start-date").value
     var entryParse = Date.parse(entryDate)
-    console.log(todayParse)
-    console.log(entryDate)
     if(todayParse > entryParse) {
         deleteParkDateError()
         var fourDiv = document.createElement("div")
@@ -190,7 +198,21 @@ function datePark() {
     } 
 }
 
-
+function daysNumber() {
+    var daysField = document.querySelector("#days")
+    if (daysField.classList.contains("check")) {
+        if (isNaN(daysField.value)) {
+            deleteParkNumberError()
+            var fiveDiv = document.createElement("div")
+            var daysWarn = document.createTextNode("Number of days must be a number.")
+            fiveDiv.setAttribute("id", "day-number")
+            fiveDiv.appendChild(daysWarn)
+            daysField.parentElement.appendChild(fiveDiv) 
+            daysField.parentElement.classList.remove("input-valid")
+            daysField.parentElement.classList.add("input-invalid")
+        }
+    }
+}
 
 
 // Listener //
@@ -201,9 +223,10 @@ function datePark() {
     validateForm()
     carYear()
     datePark()
+    daysNumber()
     // other functions called here //
     event.preventDefault()
   })
 }
 
-document.addEventListener('DOMContentLoaded', run());
+document.addEventListener('DOMContentLoaded', run())
