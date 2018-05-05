@@ -38,6 +38,7 @@ function validateEntryCar(field) {
         if (handleCar !== null) {
             handleCar.remove()
         }
+    field.setAttribute("class", "car-check")
 }
 
 function invalidMessageCar(field) {
@@ -54,6 +55,69 @@ function invalidMessageCar(field) {
     parent.parentElement.classList.add("input-invalid")
     newDiv.appendChild(newText)
     parent.parentElement.appendChild(newDiv) 
+}
+
+function deleteNumberError() {
+    if (document.getElementById("isNumber") !== null) {
+        document.getElementById("isNumber").remove()
+    }
+}
+
+function deleteAfterError() {
+    if (document.getElementById("after") !== null) {
+        document.getElementById("after").remove()
+    }
+}
+
+function deleteFutureError() {
+    if (document.getElementById("future") !== null) {
+        document.getElementById("future").remove()
+    }
+}
+
+function insertNumberError() {
+    deleteNumberError()
+    var yearField = document.querySelector("#car-year")
+    var parent = yearField.parentElement
+    var oneDiv = document.createElement("div")
+    var yearWarn = document.createTextNode("Car year must be a number.")
+    oneDiv.setAttribute("id", "isNumber")
+    oneDiv.appendChild(yearWarn)
+    parent.parentElement.appendChild(oneDiv) 
+    parent.parentElement.classList.remove("input-valid")
+    parent.parentElement.classList.add("input-invalid")
+    deleteFutureError()
+    deleteAfterError()
+}
+
+function insertAfterError() {
+    deleteAfterError()
+    var yearField = document.querySelector("#car-year")
+    var parent = yearField.parentElement
+    var twoDiv = document.createElement("div")
+    var afterWarn = document.createTextNode("Car year must be after 1900.")
+    twoDiv.setAttribute("id", "after")
+    twoDiv.appendChild(afterWarn)
+    parent.parentElement.appendChild(twoDiv) 
+    parent.parentElement.classList.remove("input-valid")
+    parent.parentElement.classList.add("input-invalid")
+    deleteNumberError()
+    deleteFutureError()
+}
+
+function insertFutureError() {
+    deleteFutureError()
+    var yearField = document.querySelector("#car-year")
+    var parent = yearField.parentElement
+    var threeDiv = document.createElement("div")
+    var futureWarn = document.createTextNode("Car year cannot be in the future.")
+    threeDiv.setAttribute("id", "future")
+    threeDiv.appendChild(futureWarn)
+    parent.parentElement.appendChild(threeDiv) 
+    parent.parentElement.classList.remove("input-valid")
+    parent.parentElement.classList.add("input-invalid")
+    deleteNumberError()
+    deleteAfterError()
 }
 
 
@@ -75,6 +139,9 @@ function validateForm (fields) {
                 invalidMessageCar(fields)
             }else {
                 validateEntryCar(fields)
+                deleteNumberError()
+                deleteAfterError()
+                deleteFutureError()
             }
         }
         
@@ -86,49 +153,13 @@ function carYear() {
     var val = yearField.value
     var num = parseInt(val, 10)
     var parent = yearField.parentElement 
-    if (parent.parentElement.classList.contains("input-valid")) {
+    if (yearField.classList.contains("car-check")) {
         if (isNaN(num)) {
-            var oneDiv = document.createElement("div")
-            var yearWarn = document.createTextNode("Car year must be a number.")
-            oneDiv.setAttribute("id", "isNumber")
-            oneDiv.appendChild(yearWarn)
-            parent.parentElement.appendChild(oneDiv) 
-            parent.parentElement.classList.remove("input-valid")
-            parent.parentElement.classList.add("input-invalid")
-            if (document.getElementById("future") !== null) {
-                document.getElementById("future").remove()
-            }
-            if (document.getElementById("after") !== null) {
-                document.getElementById("after").remove()
-            }
+            insertNumberError()
         } else if (num < 1900) {
-            var twoDiv = document.createElement("div")
-            var afterWarn = document.createTextNode("Car year must be after 1900.")
-            twoDiv.setAttribute("id", "after")
-            twoDiv.appendChild(afterWarn)
-            parent.parentElement.appendChild(twoDiv) 
-            parent.parentElement.classList.remove("input-valid")
-            parent.parentElement.classList.add("input-invalid")
-            if (document.getElementById("isNumber") !== null) {
-                document.getElementById("isNumber").remove()
-            }
-            if (document.getElementById("future") !== null) {
-                document.getElementById("future").remove()
-            }
+            insertAfterError()
         } else if (num > 2018) {
-            var threeDiv = document.createElement("div")
-            var futureWarn = document.createTextNode("Car year cannot be in the future.")
-            threeDiv.setAttribute("id", "future")
-            threeDiv.appendChild(futureWarn)
-            parent.parentElement.appendChild(threeDiv) 
-            parent.parentElement.classList.remove("input-valid")
-            parent.parentElement.classList.add("input-invalid")
-            if (document.getElementById("isNumber") !== null) {
-                document.getElementById("isNumber").remove()
-            }
-            if (document.getElementById("after") !== null) {
-                document.getElementById("after").remove()
-            }
+            insertFutureError()
         }
     }
     
