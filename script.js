@@ -129,6 +129,7 @@ function insertNumberError() {
     parent.parentElement.classList.add("input-invalid")
     deleteFutureError()
     deleteAfterError()
+    document.querySelector("#total").innerText = ""
 }
 
 function insertAfterError() {
@@ -144,6 +145,7 @@ function insertAfterError() {
     parent.parentElement.classList.add("input-invalid")
     deleteNumberError()
     deleteFutureError()
+    document.querySelector("#total").innerText = ""
 }
 
 function insertFutureError() {
@@ -159,6 +161,7 @@ function insertFutureError() {
     parent.parentElement.classList.add("input-invalid")
     deleteNumberError()
     deleteAfterError()
+    document.querySelector("#total").innerText = ""
 }
 
 function insertParkNumberError() {
@@ -171,6 +174,7 @@ function insertParkNumberError() {
     daysField.parentElement.appendChild(fiveDiv) 
     daysField.parentElement.classList.remove("input-valid")
     daysField.parentElement.classList.add("input-invalid")
+    document.querySelector("#total").innerText = ""
 }
 
 function insertLengthError() {
@@ -183,6 +187,7 @@ function insertLengthError() {
     daysField.parentElement.appendChild(sixDiv) 
     daysField.parentElement.classList.remove("input-valid")
     daysField.parentElement.classList.add("input-invalid")
+    document.querySelector("#total").innerText = ""
 }
 
 function insertCvvError() {
@@ -195,6 +200,7 @@ function insertCvvError() {
     cvvEntry.parentElement.appendChild(sevenDiv)
     cvvEntry.parentElement.classList.remove("input-valid")
     cvvEntry.parentElement.classList.add("input-invalid")
+    document.querySelector("#total").innerText = ""
 }
 
 function insertCreditCardError() {
@@ -207,6 +213,7 @@ function insertCreditCardError() {
     creditCardEntry.parentElement.appendChild(nineDiv)
     creditCardEntry.parentElement.classList.remove("input-valid")
     creditCardEntry.parentElement.classList.add("input-invalid")
+    document.querySelector("#total").innerText = ""
 }
 
 function insertExpirationError() {
@@ -219,6 +226,7 @@ function insertExpirationError() {
     creditDate.parentElement.appendChild(tenDiv)
     creditDate.parentElement.classList.remove("input-valid")
     creditDate.parentElement.classList.add("input-invalid")
+    document.querySelector("#total").innerText = ""
 }
 
 function luhnCheck(val) {
@@ -253,8 +261,9 @@ function validateForm(fields) {
         if (parent.classList.contains("input-field")) {
             if (val == '') {
                 invalidMessage(fields)
-                parent.classList.remove("input-valid")   
-                deleteParkNumberError()
+                // parent.classList.remove("input-valid")   
+                // deleteParkNumberError()
+                document.querySelector("#total").innerText = ""
             } else {
                 validateEntry(fields)
                 deleteParkDateError()
@@ -332,11 +341,36 @@ function cvv() {
     }
 }
 
-// function cost() {
-//     var price 
-//     var eightDiv = document.createElement("div")
-//     var costTotal = document.createTextNode("Total Price = " + price)
-// }
+function cost() {
+    console.log(document.querySelectorAll(".input-field").length)
+    console.log(document.querySelectorAll(".input-valid").length)
+    if (document.querySelectorAll(".input-field").length === (document.querySelectorAll(".input-valid").length + 1)) {
+        var parkLength = document.querySelector("#days").value
+        var pLms = parkLength*1000*60*60*24
+        var startDate = document.querySelector("#start-date").value
+        var startms = Date.parse(startDate)
+        startDate = new Date(startms)
+        var newDateMs = startms + pLms
+        var newDate = new Date(newDateMs)
+        var weeks = Math.floor(parkLength / 7)
+        var weekDays = parkLength - weeks*2
+
+        var startDay = startDate.getDay()
+        var endDay = newDate.getDay()
+        if (startDay - endDay > 1) {
+            weekDays = weekDays - 2
+        }
+        if (startDay == 0 && endDay !== 6) {
+            weekDays = weekDays - 1
+        }
+        if (endDay == 6 && startDay !== 0) {
+            weekDays = weekDays - 1
+        }
+        var weekEndDays = parkLength - weekDays
+        var price = weekDays*5 + weekEndDays*7
+        document.querySelector("#total").innerText = "Total Price = $" + price
+    }
+}
 
 function creditCard() {
     var creditCardEntry = document.querySelector("#credit-card")
@@ -380,6 +414,7 @@ function creditCardExp() {
     cvv()
     creditCard()
     creditCardExp()
+    cost()
     // all validation functions called here //
     event.preventDefault()
   })
