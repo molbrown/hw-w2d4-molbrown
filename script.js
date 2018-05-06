@@ -108,6 +108,12 @@ function deleteCreditCardError() {
     }
 }
 
+function deleteExpirationError() {
+    if (document.getElementById("expiration-error") !== null) {
+        document.getElementById("expiration-error").remove()
+    }
+}
+
 // Field-specific Error messages //
 
 function insertNumberError() {
@@ -203,6 +209,18 @@ function insertCreditCardError() {
     creditCardEntry.parentElement.classList.add("input-invalid")
 }
 
+function insertExpirationError() {
+    deleteExpirationError()
+    var creditDate = document.querySelector("#expiration")
+    var tenDiv = document.createElement("div")
+    var expirationWarn = document.createTextNode("Not a valid expiration date.")
+    tenDiv.setAttribute("id", "expiration-error")
+    tenDiv.appendChild(expirationWarn)
+    creditDate.parentElement.appendChild(tenDiv)
+    creditDate.parentElement.classList.remove("input-valid")
+    creditDate.parentElement.classList.add("input-invalid")
+}
+
 function luhnCheck(val) {
     var sum = 0;
     var creditCardEntry = document.querySelector("#credit-card")
@@ -245,6 +263,7 @@ function validateForm(fields) {
                 deleteLengthError()
                 deleteCvvError()
                 deleteCreditCardError()
+                deleteExpirationError()
             }
         } else {
             if (val == '') {
@@ -329,7 +348,24 @@ function creditCard() {
             luhnCheck(creditCardEntry.value)
         }
     }
-    
+}
+
+function creditCardExp() {
+    var creditDate = document.querySelector("#expiration")
+    if (creditDate.classList.contains("check")) {
+        var dateString = creditDate.value
+        var dateArray = dateString.split("/")
+        var ccMonth = dateArray[0]
+        var ccYear = dateArray[1]
+        var today = new Date()
+        var todayMonth = today.getMonth() + 1
+        var todayYear = today.getFullYear().toString().substr(-2)
+        if (isNaN(ccMonth) || isNaN(ccYear) || ccMonth < 1 || ccMonth > 12 || isNaN(ccYear)) {
+            insertExpirationError()
+        } else if (todayYear > ccYear || (todayYear == ccYear && todayMonth >= ccMonth)) {
+            insertExpirationError()
+        }
+    }
 }
 
 // Listener //
@@ -343,6 +379,7 @@ function creditCard() {
     daysNumber()
     cvv()
     creditCard()
+    creditCardExp()
     // all validation functions called here //
     event.preventDefault()
   })
