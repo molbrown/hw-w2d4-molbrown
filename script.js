@@ -58,6 +58,8 @@ function invalidMessageCar(field) {
     parent.parentElement.appendChild(newDiv) 
 }
 
+// Remove Error Messages/ Prevent repeat error messages //
+
 function deleteNumberError() {
     if (document.getElementById("isNumber") !== null) {
         document.getElementById("isNumber").remove()
@@ -87,6 +89,26 @@ function deleteParkNumberError() {
         document.getElementById("day-number").remove()
     }
 }
+
+function deleteLengthError() {
+    if (document.getElementById("length") !== null) {
+        document.getElementById("length").remove()
+    }
+}
+
+function deleteCvvError() {
+    if (document.getElementById("cvvEntry") !== null) {
+        document.getElementById("cvvEntry").remove()
+    }
+}
+
+function deleteCreditCardError() {
+    if (document.getElementById("credit-card-error") !== null) {
+        document.getElementById("credit-card-error").remove()
+    }
+}
+
+// Field-specific Error messages //
 
 function insertNumberError() {
     deleteNumberError()
@@ -133,10 +155,80 @@ function insertFutureError() {
     deleteAfterError()
 }
 
+function insertParkNumberError() {
+    deleteParkNumberError()
+    var daysField = document.querySelector("#days")
+    var fiveDiv = document.createElement("div")
+    var daysWarn = document.createTextNode("Number of days must be a number.")
+    fiveDiv.setAttribute("id", "day-number")
+    fiveDiv.appendChild(daysWarn)
+    daysField.parentElement.appendChild(fiveDiv) 
+    daysField.parentElement.classList.remove("input-valid")
+    daysField.parentElement.classList.add("input-invalid")
+}
+
+function insertLengthError() {
+    deleteLengthError()
+    var daysField = document.querySelector("#days")
+    var sixDiv = document.createElement("div")
+    var lengthWarn = document.createTextNode("Number of days must be between 1 and 30.")
+    sixDiv.setAttribute("id", "length")
+    sixDiv.appendChild(lengthWarn)
+    daysField.parentElement.appendChild(sixDiv) 
+    daysField.parentElement.classList.remove("input-valid")
+    daysField.parentElement.classList.add("input-invalid")
+}
+
+function insertCvvError() {
+    deleteCvvError()
+    var cvvEntry = document.querySelector("#cvv")
+    var sevenDiv = document.createElement("div")
+    var cvvWarn = document.createTextNode("CVV must be a three-digit number.")
+    sevenDiv.setAttribute("id", "cvvEntry")
+    sevenDiv.appendChild(cvvWarn)
+    cvvEntry.parentElement.appendChild(sevenDiv)
+    cvvEntry.parentElement.classList.remove("input-valid")
+    cvvEntry.parentElement.classList.add("input-invalid")
+}
+
+function insertCreditCardError() {
+    deleteCreditCardError()
+    var creditCardEntry = document.querySelector("#credit-card")
+    var nineDiv = document.createElement("div")
+    var creditWarn = document.createTextNode("Not a valid credit card number.")
+    nineDiv.setAttribute("id", "credit-card-error")
+    nineDiv.appendChild(creditWarn)
+    creditCardEntry.parentElement.appendChild(nineDiv)
+    creditCardEntry.parentElement.classList.remove("input-valid")
+    creditCardEntry.parentElement.classList.add("input-invalid")
+}
+
+function luhnCheck(val) {
+    var sum = 0;
+    var creditCardEntry = document.querySelector("#credit-card")
+    for (var i = 0; i < val.length; i++) {
+        var intVal = parseInt(val.substr(i, 1));
+        if (i % 2 == 0) {
+            intVal *= 2;
+            if (intVal > 9) {
+                intVal = 1 + (intVal % 10);
+            }
+        }
+        sum += intVal;
+    }
+    if ((sum % 10) == 0) {
+        creditCardEntry.parentElement.classList.add("input-valid")
+        deleteCreditCardError()
+    } else {
+        creditCardEntry.parentElement.classList.remove("input-valid")
+        creditCardEntry.parentElement.classList.add("input-invalid")
+        insertCreditCardError()
+    }
+}
 
 // Listener Functions (call above functions) //
 
-function validateForm (fields) {
+function validateForm(fields) {
     document.querySelectorAll("input").forEach(function (fields) {
         var val = fields.value
         var parent = fields.parentElement   
@@ -150,6 +242,9 @@ function validateForm (fields) {
                 deleteParkDateError()
                 deleteParkNumberError()
                 deleteParkNumberError()
+                deleteLengthError()
+                deleteCvvError()
+                deleteCreditCardError()
             }
         } else {
             if (val == '') {
@@ -202,18 +297,40 @@ function daysNumber() {
     var daysField = document.querySelector("#days")
     if (daysField.classList.contains("check")) {
         if (isNaN(daysField.value)) {
-            deleteParkNumberError()
-            var fiveDiv = document.createElement("div")
-            var daysWarn = document.createTextNode("Number of days must be a number.")
-            fiveDiv.setAttribute("id", "day-number")
-            fiveDiv.appendChild(daysWarn)
-            daysField.parentElement.appendChild(fiveDiv) 
-            daysField.parentElement.classList.remove("input-valid")
-            daysField.parentElement.classList.add("input-invalid")
-        }
+            insertParkNumberError()
+        } else if (daysField.value < 1 || daysField.value > 30) {
+            insertLengthError()
+        } 
     }
 }
 
+function cvv() {
+    var cvvEntry = document.querySelector("#cvv")
+    if (cvvEntry.classList.contains("check")) {
+        if (isNaN(cvvEntry.value) || cvvEntry.value.length !== 3) {
+            insertCvvError()
+        } 
+    }
+}
+
+// function cost() {
+//     var price 
+//     var eightDiv = document.createElement("div")
+//     var costTotal = document.createTextNode("Total Price = " + price)
+// }
+
+function creditCard() {
+    var creditCardEntry = document.querySelector("#credit-card")
+    if (creditCardEntry.classList.contains("check")) {
+        if (isNaN(creditCardEntry.value) || creditCardEntry.value.length !== 16) {
+            insertCreditCardError()
+        } 
+        else {
+            luhnCheck(creditCardEntry.value)
+        }
+    }
+    
+}
 
 // Listener //
 
@@ -224,7 +341,9 @@ function daysNumber() {
     carYear()
     datePark()
     daysNumber()
-    // other functions called here //
+    cvv()
+    creditCard()
+    // all validation functions called here //
     event.preventDefault()
   })
 }
