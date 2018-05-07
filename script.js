@@ -164,6 +164,17 @@ function insertFutureError() {
     document.querySelector("#total").innerText = ""
 }
 
+function insertParkDateError() {
+    deleteParkDateError()
+    var fourDiv = document.createElement("div")
+    var parkWarn = document.createTextNode("Date parking must be in the future.")
+    fourDiv.setAttribute("id", "park-warn")
+    fourDiv.appendChild(parkWarn)
+    document.querySelector("#start-date").parentElement.appendChild(fourDiv) 
+    document.querySelector("#start-date").parentElement.classList.remove("input-valid")
+    document.querySelector("#start-date").parentElement.classList.add("input-invalid")
+}
+
 function insertParkNumberError() {
     deleteParkNumberError()
     var daysField = document.querySelector("#days")
@@ -310,14 +321,7 @@ function datePark() {
     var entryDate = document.querySelector("#start-date").value
     var entryParse = Date.parse(entryDate)
     if(todayParse > entryParse) {
-        deleteParkDateError()
-        var fourDiv = document.createElement("div")
-        var parkWarn = document.createTextNode("Date parking must be in the future.")
-        fourDiv.setAttribute("id", "park-warn")
-        fourDiv.appendChild(parkWarn)
-        document.querySelector("#start-date").parentElement.appendChild(fourDiv) 
-        document.querySelector("#start-date").parentElement.classList.remove("input-valid")
-        document.querySelector("#start-date").parentElement.classList.add("input-invalid")
+        insertParkDateError()
     } 
 }
 
@@ -338,37 +342,6 @@ function cvv() {
         if (isNaN(cvvEntry.value) || cvvEntry.value.length !== 3) {
             insertCvvError()
         } 
-    }
-}
-
-function cost() {
-    console.log(document.querySelectorAll(".input-field").length)
-    console.log(document.querySelectorAll(".input-valid").length)
-    if (document.querySelectorAll(".input-field").length === (document.querySelectorAll(".input-valid").length + 1)) {
-        var parkLength = document.querySelector("#days").value
-        var pLms = parkLength*1000*60*60*24
-        var startDate = document.querySelector("#start-date").value
-        var startms = Date.parse(startDate)
-        startDate = new Date(startms)
-        var newDateMs = startms + pLms
-        var newDate = new Date(newDateMs)
-        var weeks = Math.floor(parkLength / 7)
-        var weekDays = parkLength - weeks*2
-
-        var startDay = startDate.getDay()
-        var endDay = newDate.getDay()
-        if (startDay - endDay > 1) {
-            weekDays = weekDays - 2
-        }
-        if (startDay == 0 && endDay !== 6) {
-            weekDays = weekDays - 1
-        }
-        if (endDay == 6 && startDay !== 0) {
-            weekDays = weekDays - 1
-        }
-        var weekEndDays = parkLength - weekDays
-        var price = weekDays*5 + weekEndDays*7
-        document.querySelector("#total").innerText = "Total Price = $" + price
     }
 }
 
@@ -402,22 +375,54 @@ function creditCardExp() {
     }
 }
 
+// It was not clear to me how to use .map and .reduce to solve this. This makes more sense to me.
+function cost() {
+    if (document.querySelectorAll(".input-field").length === (document.querySelectorAll(".input-valid").length + 1)) {
+        var parkLength = document.querySelector("#days").value
+        var pLms = parkLength*1000*60*60*24
+        var startDate = document.querySelector("#start-date").value
+        var startms = Date.parse(startDate)
+        startDate = new Date(startms)
+        var newDateMs = startms + pLms
+        var newDate = new Date(newDateMs)
+        var weeks = Math.floor(parkLength / 7)
+    // Two weekend days per week
+        var weekDays = parkLength - weeks*2
+    // Account for weekend not previously removed, if start day is after end day.
+        var startDay = startDate.getDay()
+        var endDay = newDate.getDay()
+        if (startDay - endDay > 1) {
+            weekDays = weekDays - 2
+        }
+    // If range starts on Sunday but ends before Saturday
+        if (startDay == 0 && endDay !== 6) {
+            weekDays = weekDays - 1
+        }
+    // If range ends on Saturday but starts after Sunday
+        if (endDay == 6 && startDay !== 0) {
+            weekDays = weekDays - 1
+        }
+        var weekEndDays = parkLength - weekDays
+        var price = weekDays*5 + weekEndDays*7
+        document.querySelector("#total").innerText = "Total Price = $" + price
+    }
+}
+
 // Listener //
 
-  function run() {
-
-  document.querySelector("#submit-button").addEventListener('click', function (event) {
-    validateForm()
-    carYear()
-    datePark()
-    daysNumber()
-    cvv()
-    creditCard()
-    creditCardExp()
-    cost()
-    // all validation functions called here //
-    event.preventDefault()
-  })
+function run() {
+    document.querySelector("#submit-button").addEventListener('click', function (event) {
+        validateForm()
+        carYear()
+        datePark()
+        daysNumber()
+        cvv()
+        creditCard()
+        creditCardExp()
+        cost()
+        // all validation functions called here //
+        event.preventDefault()
+    })
 }
 
 document.addEventListener('DOMContentLoaded', run())
